@@ -18,7 +18,7 @@ function ListaLigada(){
 	this.tamanho = 0;
 
 	this.add = function(dado){
-        console.log("O dado foi adicionado");
+        console.log(dado+" foi adicionado");
 		let novo_no = new Node(dado);
 
 		//if (head.proximo == null){
@@ -64,7 +64,7 @@ function ListaLigada(){
 			return null;
 		} else{
             console.log(current.dado + " foi encontrado na lista");
-            return current;
+            return current.dado;
 			//head.proximo = current.proximo;
 		}
 
@@ -147,17 +147,19 @@ function ListaLigada(){
 	this.search = function(dado){
 
 		if (head.proximo == null){
-			return false;
+            console.log("Não encontrou esse misera");
+            return false;
 		}else{
 			current = head.proximo;
 			while (current != null){
 				if(current.dado == dado){
-                    console.log("Encontrou o registro");
+                    console.log("Encontrou o registro " + dado);
                     return true;
 				}
 				//iteração
 				current = current.proximo;
-			}
+            }
+            console.log("Não encontrou esse misera");
 			return false;
 		}
 	}
@@ -202,28 +204,37 @@ function ListaLigada(){
 
 function tabelaHash(){
     let hash = [];
+    let listaAuxiliar = new ListaLigada(); //Prepara  nova lista
 
     this.inserir = function(key, registro){
-        
         let chave = key.charCodeAt();
         chave = chave % 17;
-        let novaLista = new ListaLigada(); // prepara uma novaLista
-        //adicionando a lista
-        novaLista.add(registro);
-        //Colocando lista na posição do vetor
-        hash[chave] = novaLista;
+        if(hash[chave] != null){//Se já houver registro para a chave
+            console.log("Já foi encontrado um registro para esta chave, adicionando a lista existente...")
+            listaAuxiliar = hash[chave];
+            listaAuxiliar.add(registro);
+            hash[chave] = listaAuxiliar;//reescreve o vetor para conter a lista com os mesmos registros + o novo
+        }else{ // Se não houver registro para a chava
+            console.log("Criando uma nova lista...");
+            //Cria uma nova lista
+            let novaLista = new ListaLigada(); // prepara uma novaLista
+            //adicionando a lista
+            novaLista.add(registro);
+            //Colocando lista na posição do vetor
+            hash[chave] = novaLista;
+        }
+        
+        
         console.log("\nO valor "+ registro + " foi inserido na posição " + chave +" do vetor ");
     }
 
     this.get = function(key){
-        let listaAuxiliar = new ListaLigada(); //Prepara  nova lista
         let chave = key.charCodeAt(0);
         chave = chave % 17;
         if(hash[chave] != null){
             //console.log("\nValor encontrado: " + hash[chave].getStart());
             listaAuxiliar = hash[chave];
             listaAuxiliar.getStart();
-            console.log("\nEssa posição não é nula");
         }else{
             console.log("\nO valor não foi encontrado");
         }  
@@ -234,7 +245,6 @@ function tabelaHash(){
         chave = chave % 17;
         
         if(hash[chave] != null){
-            
             hash[chave] = null;
             console.log("\nO valor foi removido")
         }else{
@@ -246,8 +256,11 @@ function tabelaHash(){
 
 let t = new tabelaHash();
 t.inserir("pru", "bananinha");
+t.inserir("pru", "bananinha2");
+t.inserir("pru", "bananinha3");
 t.get("pru");
-t.inserir("fru", "chupetinha");
+t.inserir("xuu", "novoValor");
+t.get("xuu");
 
 //let l = new ListaLigada();
 //l.add("maria");
