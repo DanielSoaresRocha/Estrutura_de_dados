@@ -1,3 +1,9 @@
+/*Questão 1
+Implementar funções de inserir, remover e buscar
+registros em uma tabela hash que utiliza strings
+como chave e que trata colisão com uso de
+Sondagem Linear em Javascript.*/
+
 function tabelaHash(){
     let hash = [];
    
