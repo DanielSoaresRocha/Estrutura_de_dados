@@ -50,24 +50,45 @@ function ListaLigada(){
 
 		current = head.proximo;
 		if (current == null) {
-			return;
+            console.log("Não tem nada para ser removido");
+            return;
 		} else{
-			head.proximo = current.proximo;
+            console.log(current.dado+ " Foi removido");
+            head.proximo = current.proximo;
 		}
 
 	}
 
     this.getStart = function(){
-
 		current = head.proximo;
 		if (current == null) {
-			return null;
+            console.log("Não tem nesta lista");
+            return null;
 		} else{
             console.log(current.dado + " foi encontrado na lista");
             return current.dado;
 			//head.proximo = current.proximo;
 		}
 
+    }
+    this.getEnd = function(){
+        console.log("ENTROU AQUI")
+		previous = head;
+		current = head.proximo;
+
+		if (current == null) {
+            console.log("Não foi encontrado");
+            return;
+		}
+
+		while (current.proximo != null){
+			previous = current;
+			current = current.proximo;
+        }
+        console.log(current.dado + " foi encontrado na lista");
+        return current.dado;
+		//current = null;
+		//previous.proximo = null;
 	}
 	this.removeEnd = function(){
 
@@ -81,7 +102,7 @@ function ListaLigada(){
 		while (current.proximo != null){
 			previous = current;
 			current = current.proximo;
-		}
+        }
 		current = null;
 		previous.proximo = null;
 	}
@@ -212,14 +233,14 @@ function tabelaHash(){
         if(hash[chave] != null){//Se já houver registro para a chave
             console.log("Já foi encontrado um registro para esta chave, adicionando a lista existente...")
             listaAuxiliar = hash[chave];
-            listaAuxiliar.add(registro);
+            listaAuxiliar.append(registro);
             hash[chave] = listaAuxiliar;//reescreve o vetor para conter a lista com os mesmos registros + o novo
         }else{ // Se não houver registro para a chava
             console.log("Criando uma nova lista...");
             //Cria uma nova lista
             let novaLista = new ListaLigada(); // prepara uma novaLista
             //adicionando a lista
-            novaLista.add(registro);
+            novaLista.append(registro);
             //Colocando lista na posição do vetor
             hash[chave] = novaLista;
         }
@@ -235,6 +256,7 @@ function tabelaHash(){
             //console.log("\nValor encontrado: " + hash[chave].getStart());
             listaAuxiliar = hash[chave];
             listaAuxiliar.getStart();
+            hash[chave] = listaAuxiliar;
         }else{
             console.log("\nO valor não foi encontrado");
         }  
@@ -245,8 +267,10 @@ function tabelaHash(){
         chave = chave % 17;
         
         if(hash[chave] != null){
-            hash[chave] = null;
-            console.log("\nO valor foi removido")
+            listaAuxiliar = hash[chave];
+            listaAuxiliar.removeStart();
+            hash[chave] = listaAuxiliar;
+            
         }else{
             console.log("\nO chave não contém nenhum valor")
         }
@@ -255,13 +279,41 @@ function tabelaHash(){
 }
 
 let t = new tabelaHash();
-t.inserir("pru", "bananinha");
-t.inserir("pru", "bananinha2");
-t.inserir("pru", "bananinha3");
-t.get("pru");
-t.inserir("xuu", "novoValor");
-t.get("xuu");
+//inserindo três pessoas em uma mesma chave :
+t.inserir("chaveUM", "Daniel");
+t.inserir("chaveUM", "Miguel");
+t.inserir("chaveUM", "Carla");
+//inserindo duas pessoas em outra chave
+t.inserir("doisChave", "Lucélia");
+t.inserir("doisChave", "Marcos");
+//Buscando valor na chaveUM
+t.get("chaveUM");  //Ele vai retornar o primeiro alemento adicionado
+//Removendo valor em chaveUM 
+t.remove("chaveUM");
+//Buscando valor na chaveUM novamente (agora deve dar o segundo pois o primeiro foi removido)
+t.get("chaveUM");
+//Removendo agora os outros dois valores em chaveUM
+t.remove("chaveUM");
+t.remove("chaveUM");
+//buscando valor na chave que agora está vazia
+t.get("chaveUM")
+//buscando valor na segunda chave
+t.get("doisChave"); // vai retornar o 1º elemento desta lista
+//removendo dois valores na segunda chave
+t.remove("doisChave");
+t.remove("doisChave");
+//tentando remover novamente quado a lista já está vazia
+t.remove("doisChave"); 
 
+
+
+
+//t.inserir("pru", "bananinha3");
+//t.get("pru");
+//t.inserir("xuu", "novoValor");
+//t.get("xuu");
+//t.remove("pru");
+//t.get("pru");
 //let l = new ListaLigada();
 //l.add("maria");
 //l.search("maria");
