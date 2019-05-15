@@ -7,6 +7,12 @@ decodificação e os dados codificados. Salve o
 arquivo.
 */
 
+
+//----------------------------INICIO DA ARVORE BINARIA-----------------------------------------
+
+
+//------------------------------------ FIM DA ARVORE BINARIA----------------------------------
+
 function Compactador(){
     let vetorCaracter = [];
     let vetorNumber = [];
@@ -26,8 +32,6 @@ function Compactador(){
                 }
             }
             if(flag == 0){          // se flag = 0                                
-                //console.log("entrou");
-                //console.log(i);
                 vetorCaracter[vetorCaracter.length] = texto[i];
                 vetorNumber[flag2] = 1;// adiciona a nova letra para o vetor
                 flag2++;
@@ -38,17 +42,41 @@ function Compactador(){
     }
 
     this.printVetor = function(){
-        console.log("\nprintando....\n");
+        console.log("\n\n\nprintando....\n");
         for(i = 0; i < vetorNumber.length; i++){
-            console.log("letra "+vetorCaracter[i]+" repetida "+vetorNumber[i]+" vezes");
+            console.log("Caracter "+vetorCaracter[i]+" repetido "+vetorNumber[i]+" vezes");
         }
     }
 
+    //ordena o vetorNumber e também o vetor de caracters para melhor manipulação
+    this.ordenar = function(){
+        for(i =0; i < vetorNumber.length; i++){
+            for(j = i+1; j < vetorNumber.length; j++){
+                if(vetorNumber[i] > vetorNumber[j]){
+                    //troca vetor de números
+                    aux = vetorNumber[i];
+                    vetorNumber[i] = vetorNumber[j];
+                    vetorNumber[j] = aux;
+                    
+                    //troca vetor de caracter
+                    aux = vetorCaracter[i];
+                    vetorCaracter[i] = vetorCaracter[j];
+                    vetorCaracter[j] = aux;
+                }
+            }
+        }
 
+    }
 }
 
 let t = new Compactador();
-t.descobrir("asdfasdkjflskadfjksdfsdfljsadfçlsadlk");
+//mandar texto
+t.descobrir("sssssss@#$!aaaAaeee##$$$$#");
+//imprime vetor desordenado
+t.printVetor();
+//ordena vetores com bubleSort
+t.ordenar();
+//imprime agora do menor para o maior
 t.printVetor();
 
 
