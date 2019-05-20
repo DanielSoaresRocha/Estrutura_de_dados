@@ -9,14 +9,185 @@ arquivo.
 
 
 //----------------------------INICIO DA ARVORE BINARIA-----------------------------------------
+function Node (key){
+    this.key = key;
+    this.dir = null;
+    this.esq = null;
+}
 
+function BinarySearchTree(){
+    let vetor = [];
+    let root = null;  
+
+
+    this.ordenarVetor = function(){
+        for(i =0; i < vetor.length; i++){
+            for(j = i+1; j < vetor.length; j++){
+                if(vetor[i] < vetor[j]){
+                    //troca vetor de números
+                    aux = vetor[i];
+                    vetor[i] = vetor[j];
+                    vetor[j] = aux;
+                }
+            }
+        }
+    }
+    this.retornaMenor = function(){
+        this.ordenarVetor();
+        let menor = vetor[vetor.length-1];
+        vetor.pop();
+        return menor;
+    }
+
+    this.insertVetor = function(valor){
+        this.ordenarVetor();
+        vetor[vetor.length] = valor;
+    }
+
+    this.mostrarVetor = function(){
+        for(i = 0; i < vetor.length; i++){
+            console.log(vetor[i]);
+        }
+    }
+
+    this.insert = function(vetorr){
+        vetor = vetorr;
+        let newNodeD, newNodeE, newNodeR;
+        while(vetor.length > 1){
+        //colocando valores nas árvores
+        newNodeE = new Node(this.retornaMenor()); // menor elemento do vetor
+        newNodeD = new Node(this.retornaMenor()); // segundo menor elemento do vetor
+        newNodeR = new Node(newNodeD.key + newNodeE.key); //o root será a soma dos dois
+
+        this.insertVetor(newNodeR.key); //inserindo o root.key atual na posição do vetor
+       
+        root = newNodeR;
+        root.esq = newNodeE; 
+        root.dir = newNodeD;
+        }
+        //this.mostrarVetor(); 
+
+    }
+
+
+    this.remove = function (key) {
+        root = this.removeNode (root, key);
+    }
+
+    this.findMinNode = function (node){
+        while (node && node.esq !== null){
+            node = node.esq;
+        }
+
+        return node;
+    }
+
+    this.removeNode = function(node, key){
+
+        if (node === null){
+            return null;
+        }
+
+        if (key < node.key){
+            node.esq = this.removeNode (node.esq, key);
+            return node;
+        } else if (key > node.key){
+            node.dir = this.removeNode (node.dir, key);
+            return node;
+        } else {
+
+            //caso 1
+            if (node.esq === null && node.dir === null){
+                node = null;
+                return node;
+            }
+
+            //caso 2
+            if (node.esq === null){
+                node = node.dir;
+                return node;
+            } else if (node.dir === null){
+                node = node.esq;
+                return node;
+            }
+
+            //caso 3
+
+            var aux = this.findMinNode(node.dir);
+            node.key = aux.key;
+            node.dir = this.removeNode (node.dir, aux.key);
+            return node;
+        }
+    }
+
+
+    this.height = function(){
+        if (root === null) {
+            console.log("é nula");
+            return -1; // altura da árvore vazia
+           }  else {
+            return this.heightNode(root);
+        }
+    }
+
+    this.heightNode = function(raiz){
+        if (raiz === null) 
+            return -1; // altura da árvore vazia
+        else {
+            altura_esquerda = this.heightNode(raiz.esq);
+            altura_direita = this.heightNode (raiz.dir);
+            if (altura_esquerda < altura_direita){
+                return altura_direita + 1;
+            }else{
+                return altura_esquerda + 1;
+            }
+        }
+    }
+
+    this.preOrder = function (){
+        this.preOrderNode(root);
+    }
+
+    this.preOrderNode = function(node){
+        if (node !== null) {
+            console.log(node.key);
+            this.preOrderNode(node.esq);
+            this.preOrderNode(node.dir);
+        }
+    }
+
+    this.inOrder = function (){
+        this.inOrderNode(root);
+    }
+
+    this.inOrderNode = function(node){
+        if (node !== null) {
+            this.inOrderNode(node.esq);
+            console.log(node.key);
+            this.inOrderNode(node.dir);
+        }
+    }
+
+    this.posOrder = function (){
+        this.posOrderNode(root);
+    }
+
+    this.posOrderNode = function(node){
+        if (node !== null) {
+            this.posOrderNode(node.esq);
+            this.posOrderNode(node.dir);
+            console.log(node.key);
+        }
+    }
+
+}
 
 //------------------------------------ FIM DA ARVORE BINARIA----------------------------------
 
 function Compactador(){
     let vetorCaracter = [];
     let vetorNumber = [];
-    
+    let arvore = new BinarySearchTree();
 
     //Descobrir quantas vezes cada letra se repete
     this.descobrir = function(texto){
@@ -52,7 +223,7 @@ function Compactador(){
     this.ordenar = function(){
         for(i =0; i < vetorNumber.length; i++){
             for(j = i+1; j < vetorNumber.length; j++){
-                if(vetorNumber[i] > vetorNumber[j]){
+                if(vetorNumber[i] < vetorNumber[j]){
                     //troca vetor de números
                     aux = vetorNumber[i];
                     vetorNumber[i] = vetorNumber[j];
@@ -67,17 +238,35 @@ function Compactador(){
         }
 
     }
+
+    //inserir na arvore de acordo com a maior frequência
+    this.insertAll = function(){
+        //for(i = vetorNumber.length-1; i >= 0; i--){ //como o vetor de caracter já está ordenado do menor para o maior
+            //arvore.insert(vetorCaracter[i]);       //basta adicionar na arvore do último até o primeiro índice do vetorCaracter
+        //}
+        arvore.insert(vetorNumber);
+    }
+
+    this.printArvore = function(){
+       arvore.height();
+    }
+    
+
 }
 
 let t = new Compactador();
 //mandar texto
-t.descobrir("sssssss@#$!aaaAaeee##$$$$#");
+t.descobrir("aaaaabccccccdddddddddee");
 //imprime vetor desordenado
 t.printVetor();
 //ordena vetores com bubleSort
 t.ordenar();
 //imprime agora do menor para o maior
 t.printVetor();
+//inserindo caracters na arvore de acordo com a maior frequência
+t.insertAll();
+t.printArvore();
+
 
 
 
