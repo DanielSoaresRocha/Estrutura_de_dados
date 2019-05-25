@@ -40,7 +40,7 @@ function BinarySearchTree(){
     }
 
     this.retornaSmenor = function(){
-        let menor = vetorNode[0].key, smenor;
+        let menor = vetorNode[0].key, smenor = menor;
         for(i = 0; i < vetorNode.length; i++){
             if(vetorNode[i].key < menor){
                 smenor = menor;
@@ -268,7 +268,7 @@ function Compactador(){
     }
 
     this.printArvore = function(){
-       console.log("------------------------PRE ORDEMMM----------------------")
+       console.log("------------------------PRE ORDEMMM----------------------");
         arvore.preOrder();
     }
 }
@@ -285,6 +285,7 @@ t.printVetor();
 //inserindo caracters na arvore de acordo com a maior frequência
 t.insertAll();
 t.printArvore();
+
 
 
 
