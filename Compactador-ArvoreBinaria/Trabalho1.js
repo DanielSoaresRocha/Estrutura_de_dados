@@ -16,27 +16,38 @@ function Node (key){
 }
 
 function BinarySearchTree(){
-    let vetor = [];
+    let vetorNode = [];
     let root = null;  
 
 
     this.ordenarVetor = function(){
-        for(i =0; i < vetor.length; i++){
-            for(j = i+1; j < vetor.length; j++){
-                if(vetor[i] < vetor[j]){
+        for(i =0; i < vetorNode.length; i++){
+            for(j = i+1; j < vetorNode.length; j++){
+                if(vetorNode[i].key < vetorNode[j].key){
                     //troca vetor de números
-                    aux = vetor[i];
-                    vetor[i] = vetor[j];
-                    vetor[j] = aux;
+                    aux = vetorNode[i];
+                    vetorNode[i] = vetorNode[j];
+                    vetorNode[j] = aux;
                 }
             }
         }
     }
     this.retornaMenor = function(){
         this.ordenarVetor();
-        let menor = vetor[vetor.length-1];
-        vetor.pop();
+        let menor = vetorNode[vetorNode.length-1].key;
+        //vetorNode.pop();
         return menor;
+    }
+
+    this.retornaSmenor = function(){
+        let menor = vetorNode[0].key, smenor;
+        for(i = 0; i < vetorNode.length; i++){
+            if(vetorNode[i].key < menor){
+                smenor = menor;
+                menor = vetorNode[i].key;
+            }
+        }
+        return smenor;
     }
 
     this.insertVetor = function(valor){
@@ -44,31 +55,42 @@ function BinarySearchTree(){
         vetor[vetor.length] = valor;
     }
 
-    this.mostrarVetor = function(){
-        for(i = 0; i < vetor.length; i++){
-            console.log(vetor[i]);
+    this.escontrarNo = function(key){
+        for(i = 0; i < vetorNode.length; i++){  
+            if(vetorNode[i].key == key){
+                return vetorNode[i];
+            }
         }
     }
 
-    this.insert = function(vetorr){
-        vetor = vetorr;
-        let newNodeD, newNodeE, newNodeR;
-        while(vetor.length > 1){
-        //colocando valores nas árvores
-        newNodeE = new Node(this.retornaMenor()); // menor elemento do vetor
-        newNodeD = new Node(this.retornaMenor()); // segundo menor elemento do vetor
-        newNodeR = new Node(newNodeD.key + newNodeE.key); //o root será a soma dos dois
-
-        this.insertVetor(newNodeR.key); //inserindo o root.key atual na posição do vetor
-       
-        root = newNodeR;
-        root.esq = newNodeE; 
-        root.dir = newNodeD;
+    //esta função realiza a implementação da arvore de huffman
+    this.insert2 = function(vetorOriginal){
+        let newNode;
+        //criando todos os nós no vetorNode
+        for(i = 0;i < vetorOriginal.length; i++){
+            newNode = new Node(vetorOriginal[i]);
+            vetorNode[i] = newNode;
         }
-        //this.mostrarVetor(); 
 
+        while(vetorNode.length > 1){
+            menor = this.retornaMenor(); //pegar menor elemento do vetor
+            smenor = this.retornaSmenor(); //pegar segundo menor elemento do vetor
+            
+            newNode = new Node(smenor + menor); // o novo nó será a soma dos dois menores
+
+            newNode.esq = this.escontrarNo(menor); // a função encontrarNo recebe como parâmetro uma key
+            newNode.dir = this.escontrarNo(smenor); // e retorna o nó que contém está key
+
+            this.ordenarVetor(); // ordena o vetor
+            vetorNode.pop(); //dois pop para remover do vetor os dois menores 
+            vetorNode.pop(); //já utilizados
+
+            vetorNode[vetorNode.length] = newNode; //o novo no será inserido no vetor
+        }
+        
+        root = newNode;  //colocando este nó no root
     }
-
+    
 
     this.remove = function (key) {
         root = this.removeNode (root, key);
@@ -188,6 +210,7 @@ function Compactador(){
     let vetorCaracter = [];
     let vetorNumber = [];
     let arvore = new BinarySearchTree();
+    let indice = 0;
 
     //Descobrir quantas vezes cada letra se repete
     this.descobrir = function(texto){
@@ -220,6 +243,7 @@ function Compactador(){
     }
 
     //ordena o vetorNumber e também o vetor de caracters para melhor manipulação
+    //Do maior para o menor
     this.ordenar = function(){
         for(i =0; i < vetorNumber.length; i++){
             for(j = i+1; j < vetorNumber.length; j++){
@@ -236,22 +260,17 @@ function Compactador(){
                 }
             }
         }
-
     }
 
     //inserir na arvore de acordo com a maior frequência
     this.insertAll = function(){
-        //for(i = vetorNumber.length-1; i >= 0; i--){ //como o vetor de caracter já está ordenado do menor para o maior
-            //arvore.insert(vetorCaracter[i]);       //basta adicionar na arvore do último até o primeiro índice do vetorCaracter
-        //}
-        arvore.insert(vetorNumber);
+        arvore.insert2(vetorNumber);
     }
 
     this.printArvore = function(){
-       arvore.height();
+       console.log("------------------------PRE ORDEMMM----------------------")
+        arvore.preOrder();
     }
-    
-
 }
 
 let t = new Compactador();
@@ -266,6 +285,7 @@ t.printVetor();
 //inserindo caracters na arvore de acordo com a maior frequência
 t.insertAll();
 t.printArvore();
+
 
 
 
