@@ -34,6 +34,7 @@ function BinarySearchTree(){
             }
         }
     }
+
     this.retornaMenor = function(){
         this.ordenarVetor();
         let menor = vetorNode[vetorNode.length-1].key;
@@ -43,27 +44,9 @@ function BinarySearchTree(){
     }
 
     this.retornaSmenor = function(){
-        let menor = vetorNode[0].key, smenor = menor;
-        for(i = 0; i < vetorNode.length; i++){
-            if(vetorNode[i].key < menor){
-                smenor = menor;
-                menor = vetorNode[i].key;
-            }
-        }
+        let smenor = vetorNode[vetorNode.length-2].key;
+        
         return smenor;
-    }
-
-    this.insertVetor = function(valor){
-        this.ordenarVetor();
-        vetor[vetor.length] = valor;
-    }
-
-    this.escontrarNo = function(key){
-        for(i = 0; i < vetorNode.length; i++){  
-            if(vetorNode[i].key == key){
-                return vetorNode[i];
-            }
-        }
     }
 
     //esta função realiza a implementação da arvore de huffman
@@ -82,11 +65,11 @@ function BinarySearchTree(){
             
             newNode = new Node(smenor + menor); // o novo nó será a soma dos dois menores
 
-            newNode.esq = this.escontrarNo(menor); // a função encontrarNo recebe como parâmetro uma key
-            newNode.dir = this.escontrarNo(smenor); // e retorna o nó que contém está key
-            
+            this.ordenarVetor(); // ordena o vetor (do maior para o menor)
 
-            this.ordenarVetor(); // ordena o vetor
+            newNode.esq = vetorNode[vetorNode.length-1]; //retornar o menor elemento
+            newNode.dir = vetorNode[vetorNode.length-2]; //retornar segundo menor
+
             vetorNode.pop(); //dois pop para remover do vetor os dois menores 
             vetorNode.pop(); //já utilizados
 
@@ -94,12 +77,12 @@ function BinarySearchTree(){
         }
         
         root = newNode;  //colocando este nó no root
-        //console.log(root.dir.esq.letra);
+        //console.log(root.dir.dir.key);
         this.createTable();
         //console.log(root.esq.esq.letra);
-        //for(i = 0; i < vetorCaracter.length; i++){  
-        //    console.log("letra = "+vetorCaracter[i] +" valor = "+ table[vetorCaracter[i]]);
-        //}
+        for(i = 0; i < vetorCaracter.length; i++){  
+            console.log("letra = "+vetorCaracter[i] +" valor = "+ table[vetorCaracter[i]]);
+        }
     }
 
     this.createTable = function (){
@@ -227,7 +210,7 @@ function Compactador(){
 
 let t = new Compactador();
 //mandar texto
-t.descobrir("cccccbbbbaaa");
+t.descobrir("aaabbbbcasfsadf@!#asdcccc");
 //imprime vetor desordenado
 t.printVetor();
 //ordena vetores com bubleSort
