@@ -11,6 +11,7 @@ arquivo.
 //----------------------------INICIO DA ARVORE BINARIA-----------------------------------------
 function Node (key){
     this.key = key;
+    this.letra = undefined;
     this.dir = null;
     this.esq = null;
 }
@@ -18,6 +19,7 @@ function Node (key){
 function BinarySearchTree(){
     let vetorNode = [];
     let root = null;  
+    let table = [];
 
 
     this.ordenarVetor = function(){
@@ -37,6 +39,7 @@ function BinarySearchTree(){
         let menor = vetorNode[vetorNode.length-1].key;
         //vetorNode.pop();
         return menor;
+        
     }
 
     this.retornaSmenor = function(){
@@ -64,11 +67,12 @@ function BinarySearchTree(){
     }
 
     //esta função realiza a implementação da arvore de huffman
-    this.insert2 = function(vetorOriginal){
+    this.insert2 = function(vetorNumber,vetorCaracter){
         let newNode;
         //criando todos os nós no vetorNode
-        for(i = 0;i < vetorOriginal.length; i++){
-            newNode = new Node(vetorOriginal[i]);
+        for(i = 0;i < vetorNumber.length; i++){
+            newNode = new Node(vetorNumber[i]); // inserindo key 
+            newNode.letra = vetorCaracter[i]; // inserindo letra
             vetorNode[i] = newNode;
         }
 
@@ -80,6 +84,7 @@ function BinarySearchTree(){
 
             newNode.esq = this.escontrarNo(menor); // a função encontrarNo recebe como parâmetro uma key
             newNode.dir = this.escontrarNo(smenor); // e retorna o nó que contém está key
+            
 
             this.ordenarVetor(); // ordena o vetor
             vetorNode.pop(); //dois pop para remover do vetor os dois menores 
@@ -89,90 +94,37 @@ function BinarySearchTree(){
         }
         
         root = newNode;  //colocando este nó no root
+        //console.log(root.dir.esq.letra);
+        this.createTable();
+        //console.log(root.esq.esq.letra);
+        //for(i = 0; i < vetorCaracter.length; i++){  
+        //    console.log("letra = "+vetorCaracter[i] +" valor = "+ table[vetorCaracter[i]]);
+        //}
+    }
+
+    this.createTable = function (){
+        this.fillTable(root, '');
+        //console.log(table);
+    }
+
+    this.fillTable = function(node, code){
+
+        if(node.letra != undefined){
+            //console.log(node.letra);
+            table[node.letra] = code;
+        }else{
+            this.fillTable(node.esq, code+'0');
+            this.fillTable(node.dir, code+'1');
+        }
     }
     
-
-    this.remove = function (key) {
-        root = this.removeNode (root, key);
-    }
-
-    this.findMinNode = function (node){
-        while (node && node.esq !== null){
-            node = node.esq;
-        }
-
-        return node;
-    }
-
-    this.removeNode = function(node, key){
-
-        if (node === null){
-            return null;
-        }
-
-        if (key < node.key){
-            node.esq = this.removeNode (node.esq, key);
-            return node;
-        } else if (key > node.key){
-            node.dir = this.removeNode (node.dir, key);
-            return node;
-        } else {
-
-            //caso 1
-            if (node.esq === null && node.dir === null){
-                node = null;
-                return node;
-            }
-
-            //caso 2
-            if (node.esq === null){
-                node = node.dir;
-                return node;
-            } else if (node.dir === null){
-                node = node.esq;
-                return node;
-            }
-
-            //caso 3
-
-            var aux = this.findMinNode(node.dir);
-            node.key = aux.key;
-            node.dir = this.removeNode (node.dir, aux.key);
-            return node;
-        }
-    }
-
-
-    this.height = function(){
-        if (root === null) {
-            console.log("é nula");
-            return -1; // altura da árvore vazia
-           }  else {
-            return this.heightNode(root);
-        }
-    }
-
-    this.heightNode = function(raiz){
-        if (raiz === null) 
-            return -1; // altura da árvore vazia
-        else {
-            altura_esquerda = this.heightNode(raiz.esq);
-            altura_direita = this.heightNode (raiz.dir);
-            if (altura_esquerda < altura_direita){
-                return altura_direita + 1;
-            }else{
-                return altura_esquerda + 1;
-            }
-        }
-    }
-
     this.preOrder = function (){
         this.preOrderNode(root);
     }
 
     this.preOrderNode = function(node){
         if (node !== null) {
-            console.log(node.key);
+            console.log( node.letra +'|'+node.key);
             this.preOrderNode(node.esq);
             this.preOrderNode(node.dir);
         }
@@ -210,7 +162,7 @@ function Compactador(){
     let vetorCaracter = [];
     let vetorNumber = [];
     let arvore = new BinarySearchTree();
-    let indice = 0;
+
 
     //Descobrir quantas vezes cada letra se repete
     this.descobrir = function(texto){
@@ -264,7 +216,7 @@ function Compactador(){
 
     //inserir na arvore de acordo com a maior frequência
     this.insertAll = function(){
-        arvore.insert2(vetorNumber);
+        arvore.insert2(vetorNumber,vetorCaracter);
     }
 
     this.printArvore = function(){
@@ -275,7 +227,7 @@ function Compactador(){
 
 let t = new Compactador();
 //mandar texto
-t.descobrir("aaaaabccccccdddddddddee");
+t.descobrir("cccccbbbbaaa");
 //imprime vetor desordenado
 t.printVetor();
 //ordena vetores com bubleSort
