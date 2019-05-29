@@ -8,7 +8,7 @@ arquivo.
 */
 
 
-//----------------------------INICIO DA ARVORE BINARIA-----------------------------------------
+//----------------------------INICIO DA ARVORE DE HUFFMAN-----------------------------------------
 function Node(key) {
     this.key = key;
     this.letra = undefined;
@@ -175,7 +175,8 @@ function BinarySearchTree() {
             separado = numbers[0].split("|");
             l = separado[0] === '*' ? undefined : separado[0];
             f = parseInt(separado[1]);
-            node = new Node(l, f);
+            node = new Node(f);
+            node.letra = l;
             numbers.splice(0, 1);
             node.esq = this.loadPreOrder(node.esq);
             node.dir = this.loadPreOrder(node.dir);
@@ -219,47 +220,9 @@ function BinarySearchTree() {
     }
 }
 
-//------------------------------------ FIM DA ARVORE BINARIA----------------------------------
-
-//----------------------------------------------------------------------------------------------
+//---------------------------------- FIM DA ARVORE DE HUFFMAN----------------------------------
 
 
-//--------------------------------------------------------------------------------------------
-function TADzip() {
-    let h = new BinarySearchTree();
-
-    this.zip = function (filename) {
-        console.log("ENTROUUUU");
-        var fs = require("fs");
-        var palavra = fs.readFileSync("./" + filename, "utf-8");
-        h.getFrequency(palavra);
-
-        h.createTree();
-        h.createTable();
-
-        purename = filename.split(".");
-
-        h.writeToFile(purename[0] + ".tadzip", palavra);
-    }
-
-    this.unzip = function (filename) {
-        h.loadFromFile(filename);
-
-        var fs = require("fs");
-        var file = fs.readFileSync("./" + filename, "utf-8");
-        data = file.split(";");
-        palavra = data.pop(); //optendo apenas a parte final dos dados.
-
-        purename = filename.split(".");
-
-        var ofs = require('fs');
-        var file = ofs.createWriteStream(purename[0] + "[1].dat", "utf-8");
-        file.write(h.decode(palavra));
-        file.end();
-    }
-}
-
-let z = new TADzip();
 
 //--------------------------------------------------------------------------------------------
 
@@ -267,20 +230,6 @@ function Compactador() {
     let vetorCaracter = [];
     let vetorNumber = [];
     let arvore = new BinarySearchTree();
-
-
-    this.pegar = function (arquivo) {
-        // Requiring fs module in which  
-        // readFile function is defined. 
-        const fs = require('fs')
-
-        fs.readFile(arquivo, (err, data) => {
-            if (err) throw err;
-
-            //console.log(data.toString());
-            this.descobrir(data.toString());
-        })   
-    }
 
     this.zip = function (filename) {
         console.log("ENTROUUUU");
@@ -292,6 +241,25 @@ function Compactador() {
         purename = filename.split(".");
 
         arvore.writeToFile(purename[0] + ".tadzip", palavra);
+        console.log("\n\nARQUIVO COMPACTADO\n\n")
+    }
+
+    this.unzip = function (filename) {
+        arvore.loadFromFile(filename);
+
+        var fs = require("fs");
+        var file = fs.readFileSync("./" + filename, "utf-8");
+        data = file.split(";");
+        palavra = data.pop(); //optendo apenas a parte final dos dados.
+
+        purename = filename.split(".");
+
+        var ofs = require('fs');
+        var file = ofs.createWriteStream(purename[0] + "[1].dat", "utf-8");
+        file.write(arvore.decode(palavra));
+        file.end();
+
+        console.log("\n\nARQUIVO DESCOMPACTADO\n\n");
     }
 
     //Descobrir quantas vezes cada letra se repete
@@ -355,23 +323,12 @@ function Compactador() {
     }
 }
 
-let t = new Compactador();
+let c = new Compactador();
 
-//t.pegar("arquivo.dat");
-t.zip("arquivo.dat");
-//mandar texto
-//t.descobrir("aaabbbbcasfsadf@!#asdcccc");
-//imprime vetor desordenado
-//t.printVetor();
-//ordena vetores com bubleSort
-//t.ordenar();
-//imprime agora do menor para o maior
-//t.printVetor();
-//inserindo caracters na arvore de acordo com a maior frequência
-//t.insertAll();
-///t.printArvore();
+//c.zip para compactar, e c.unzip para descompactar
 
-
+//c.zip("arquivo.dat");
+//c.unzip("arquivo.tadzip");
 
 
 
